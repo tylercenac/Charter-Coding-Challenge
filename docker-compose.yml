@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+
+  rewards-service:
+    build: RewardsService
+    restart: always
+    ports:
+      - 8012:8012
+    depends_on:
+      - rewards-db
+    stdin_open: true
+
+
+  rewardpoints-db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'rewards'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - rewardpoints-db:/var/lib/mysql
+
+volumes:
+  rewardpoints-db:
