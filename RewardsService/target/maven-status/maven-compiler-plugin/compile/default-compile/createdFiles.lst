@@ -1,3 +1,5 @@
 org\example\Main.class
-org\example\service\RewardPointService.class
 org\example\controller\RewardPointController.class
+org\example\repository\RewardPointRepository.class
+org\example\data\PurchaseEntity.class
+org\example\service\RewardPointService.class

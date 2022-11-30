@@ -9,6 +9,6 @@ import javax.persistence.Table;
 import org.json.simple.JSONArray;
 
 @Entity
-@Table(name="publishersdb")
+@Table(name="rewardpointsdb")
 public class PurchaseEntity {
 }
