@@ -19,14 +19,19 @@ public class RewardPointController {
         return rewardPointService.savePurchaseToDb(customerId, purchaseAmount, date);
     }
 
+    @GetMapping("/reward-points")
+    public String getTotalRewardsPointsEarned(){
+        return rewardPointService.getTotalRewardsPointsEarned();
+    }
+
     @GetMapping("/reward-points/{customerId}")
-    public String getTotalRewardsPointsEarned(@PathVariable String customerId){
-        return rewardPointService.getTotalRewardsPointsEarned(customerId);
+    public String getTotalRewardsPointsEarnedByCustomer(@PathVariable String customerId){
+        return rewardPointService.getTotalRewardsPointsEarnedByCustomer(customerId);
     }
 
     @GetMapping("/reward-points/{date}/{customerId}")
     public String getRewardsPointsEarnedByMonth(@PathVariable String date, @PathVariable String customerId){
-        return rewardPointService.getRewardsPointsEarnedByMonth(date, customerId);
+        return rewardPointService.getRewardsPointsEarnedByCustomerByMonth(date, customerId);
     }
 
 }

@@ -5,6 +5,7 @@ import org.example.repository.RewardPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -36,8 +37,26 @@ public class RewardPointService {
 
     }
 
+    public String getTotalRewardsPointsEarned() {
 
-    public String getTotalRewardsPointsEarned(String customerId) {
+        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointRepository.findAll();
+        HashMap<String, Integer> rewardPointsMap = new HashMap<>();
+
+        for(PurchaseEntity result : results){
+            String customerId = result.getCustomerId();
+
+            if(rewardPointsMap.containsKey(customerId)){
+                rewardPointsMap.put(customerId, rewardPointsMap.get(customerId) + result.getRewardPointsEarned());
+            }else{
+                rewardPointsMap.put(customerId, result.getRewardPointsEarned());
+            }
+        }
+
+        return rewardPointsMap.toString();
+    }
+
+
+    public String getTotalRewardsPointsEarnedByCustomer(String customerId) {
         int totalRewardPointsEarned = 0;
         List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
 
@@ -48,7 +67,9 @@ public class RewardPointService {
         return String.format("Customer %s has earned a total of %d reward points!", customerId, totalRewardPointsEarned);
     }
 
-    public String getRewardsPointsEarnedByMonth(String date, String customerId) {
+    public String getRewardsPointsEarnedByCustomerByMonth(String date, String customerId) {
+
+
 
         return "Not yet implemented";
     }
