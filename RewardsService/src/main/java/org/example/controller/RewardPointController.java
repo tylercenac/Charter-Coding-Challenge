@@ -24,6 +24,11 @@ public class RewardPointController {
         return rewardPointService.getTotalRewardsPointsEarned();
     }
 
+    @GetMapping("/reward-points/by-month")
+    public String getTotalRewardsPointsEarnedByMonth(){
+        return rewardPointService.getTotalRewardsPointsEarnedByMonth();
+    }
+
     @GetMapping("/reward-points/{customerId}")
     public String getTotalRewardsPointsEarnedByCustomer(@PathVariable String customerId){
         return rewardPointService.getTotalRewardsPointsEarnedByCustomer(customerId);

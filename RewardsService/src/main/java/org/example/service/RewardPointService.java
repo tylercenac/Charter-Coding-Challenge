@@ -5,6 +5,7 @@ import org.example.repository.RewardPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +56,41 @@ public class RewardPointService {
         return rewardPointsMap.toString();
     }
 
+    public String getTotalRewardsPointsEarnedByMonth() {
+
+        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointRepository.findAll();
+        HashMap<String, List<PurchaseEntity>> customerMap = new HashMap<>();
+
+        // For each purchase record
+        for(PurchaseEntity result : results){
+            String customerId = result.getCustomerId();
+            List<PurchaseEntity> purchaseEntities;
+
+            // Determine if customerMap already contains customer or not
+
+            //if customerMap contains customer, add purchaseEntity to list
+            if(customerMap.containsKey(customerId)){
+                purchaseEntities = customerMap.get(customerId);
+
+            }else{
+                purchaseEntities = new ArrayList<>();
+
+            }
+            purchaseEntities.add(result);
+            customerMap.put(customerId, purchaseEntities);
+
+        }
+
+        HashMap<String, HashMap<String, Integer>> customerRewardPointsMap = new HashMap<>();
+
+        for(String customerId : customerMap.keySet()){
+            HashMap<String, Integer> rewardPointsByMonth = getRewardPointsEarnedByMonth(customerMap.get(customerId));
+            customerRewardPointsMap.put(customerId, rewardPointsByMonth);
+        }
+
+        return customerRewardPointsMap.toString();
+    }
+
 
     public String getTotalRewardsPointsEarnedByCustomer(String customerId) {
         int totalRewardPointsEarned = 0;
@@ -69,22 +105,30 @@ public class RewardPointService {
 
     public String getRewardsPointsEarnedByCustomerByMonth(String customerId) {
         List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
-        HashMap<String, Integer> rewardPointsMap = new HashMap<>();
-
-        for(PurchaseEntity result : results){
-            int monthIndex = result.getDate().indexOf("-");
-            int yearIndex = result.getDate().lastIndexOf("-");
-
-
-            String monthAndYear = result.getDate().substring(0, monthIndex) + result.getDate().substring(yearIndex);
-
-            if(rewardPointsMap.containsKey(monthAndYear)){
-                rewardPointsMap.put(monthAndYear, rewardPointsMap.get(monthAndYear) + result.getRewardPointsEarned());
-            }else{
-                rewardPointsMap.put(monthAndYear, result.getRewardPointsEarned());
-            }
-        }
+        HashMap<String, Integer> rewardPointsMap = getRewardPointsEarnedByMonth(results);
 
         return rewardPointsMap.toString();
     }
+
+    public HashMap<String, Integer> getRewardPointsEarnedByMonth(List<PurchaseEntity> purchaseEntities){
+
+        HashMap<String, Integer> rewardPointsMap = new HashMap<>();
+
+        for(PurchaseEntity purchaseEntity : purchaseEntities){
+            int monthIndex = purchaseEntity.getDate().indexOf("-");
+            int yearIndex = purchaseEntity.getDate().lastIndexOf("-");
+
+
+            String monthAndYear = purchaseEntity.getDate().substring(0, monthIndex) + purchaseEntity.getDate().substring(yearIndex);
+
+            if(rewardPointsMap.containsKey(monthAndYear)){
+                rewardPointsMap.put(monthAndYear, rewardPointsMap.get(monthAndYear) + purchaseEntity.getRewardPointsEarned());
+            }else{
+                rewardPointsMap.put(monthAndYear, purchaseEntity.getRewardPointsEarned());
+            }
+        }
+
+        return rewardPointsMap;
+    }
+
 }
