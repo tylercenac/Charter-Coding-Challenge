@@ -5,6 +5,8 @@ import org.example.repository.RewardPointRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RewardPointService {
 
@@ -36,8 +38,14 @@ public class RewardPointService {
 
 
     public String getTotalRewardsPointsEarned(String customerId) {
+        int totalRewardPointsEarned = 0;
+        List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
 
-        return "Not yet implemented";
+        for(PurchaseEntity result : results){
+            totalRewardPointsEarned += result.getRewardPointsEarned();
+        }
+
+        return String.format("Customer %s has earned a total of %d reward points!", customerId, totalRewardPointsEarned);
     }
 
     public String getRewardsPointsEarnedByMonth(String date, String customerId) {

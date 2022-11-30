@@ -3,12 +3,14 @@ package org.example.data;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name="rewardpointsdb")
 public class PurchaseEntity {
 
     @Id
+    private String purchaseId;
     private String customerId;
     private String date;
     private int rewardPointsEarned;
@@ -19,11 +21,19 @@ public class PurchaseEntity {
 
     public PurchaseEntity(String customerId, String date, int rewardPointsEarned){
         this();
+        this.setPurchaseId(String.valueOf(UUID.randomUUID()));
         this.setCustomerId(customerId);
         this.setDate(date);
         this.setRewardPointsEarned(rewardPointsEarned);
     }
 
+    public String getPurchaseId() {
+        return purchaseId;
+    }
+
+    public void setPurchaseId(String purchaseId) {
+        this.purchaseId = purchaseId;
+    }
 
     public String getCustomerId() {
         return customerId;

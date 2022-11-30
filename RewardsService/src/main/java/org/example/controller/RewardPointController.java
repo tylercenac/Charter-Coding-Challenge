@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import io.swagger.annotations.ApiParam;
 import org.example.service.RewardPointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,11 +13,6 @@ public class RewardPointController {
 
     @Autowired
     private RewardPointService rewardPointService;
-
-    @GetMapping
-    public String test(){
-        return "testSuccessful";
-    }
 
     @PostMapping("/purchase/{customerId}/{purchaseAmount}/{date}")
     public String savePurchaseRecord(@PathVariable String customerId, @PathVariable int purchaseAmount, @PathVariable String date){
