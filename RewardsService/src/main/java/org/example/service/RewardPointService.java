@@ -67,10 +67,24 @@ public class RewardPointService {
         return String.format("Customer %s has earned a total of %d reward points!", customerId, totalRewardPointsEarned);
     }
 
-    public String getRewardsPointsEarnedByCustomerByMonth(String date, String customerId) {
+    public String getRewardsPointsEarnedByCustomerByMonth(String customerId) {
+        List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
+        HashMap<String, Integer> rewardPointsMap = new HashMap<>();
+
+        for(PurchaseEntity result : results){
+            int monthIndex = result.getDate().indexOf("-");
+            int yearIndex = result.getDate().lastIndexOf("-");
 
 
+            String monthAndYear = result.getDate().substring(0, monthIndex) + result.getDate().substring(yearIndex);
 
-        return "Not yet implemented";
+            if(rewardPointsMap.containsKey(monthAndYear)){
+                rewardPointsMap.put(monthAndYear, rewardPointsMap.get(monthAndYear) + result.getRewardPointsEarned());
+            }else{
+                rewardPointsMap.put(monthAndYear, result.getRewardPointsEarned());
+            }
+        }
+
+        return rewardPointsMap.toString();
     }
 }

@@ -29,9 +29,9 @@ public class RewardPointController {
         return rewardPointService.getTotalRewardsPointsEarnedByCustomer(customerId);
     }
 
-    @GetMapping("/reward-points/{date}/{customerId}")
-    public String getRewardsPointsEarnedByMonth(@PathVariable String date, @PathVariable String customerId){
-        return rewardPointService.getRewardsPointsEarnedByCustomerByMonth(date, customerId);
+    @GetMapping("/reward-points/by-month/{customerId}")
+    public String getRewardsPointsEarnedByMonth(@PathVariable String customerId){
+        return rewardPointService.getRewardsPointsEarnedByCustomerByMonth(customerId);
     }
 
 }
