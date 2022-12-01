@@ -30,7 +30,7 @@ public class RewardPointController {
     }
 
     @GetMapping("/reward-points/{customerId}")
-    public String getTotalRewardsPointsEarnedByCustomer(@PathVariable String customerId){
+    public String getTotalRewardsPointsEarnedByCustomer(@ApiParam(value = "Example: 12345") @PathVariable String customerId){
         return rewardPointService.getTotalRewardsPointsEarnedByCustomer(customerId);
     }
 

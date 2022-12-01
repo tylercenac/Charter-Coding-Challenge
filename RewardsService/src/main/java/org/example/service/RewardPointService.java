@@ -13,17 +13,19 @@ import java.util.List;
 public class RewardPointService {
 
     @Autowired
-    RewardPointRepository rewardPointRepository;
+    RewardPointRepository rewardPointsRepository;
 
+    // Stores purchase information in a PurchaseEntity object and saves the object to the Reward Points DB
     public String savePurchaseToDb(String customerId, int purchaseAmount, String date){
         int rewardPointsEarned = calculateRewardPoints(purchaseAmount);
 
         PurchaseEntity purchaseEntity = new PurchaseEntity(customerId, date, rewardPointsEarned);
-        rewardPointRepository.save(purchaseEntity);
+        rewardPointsRepository.save(purchaseEntity);
 
         return String.format("Purchase for $%d by customer %s on %s saved! Customer has earned %d reward points for this purchase!", purchaseAmount, customerId, date, rewardPointsEarned);
     }
 
+    // Return the number of points a customer earns from a purchase
     public int calculateRewardPoints(int purchaseAmount){
 
         if(purchaseAmount > 100){
@@ -38,9 +40,10 @@ public class RewardPointService {
 
     }
 
+    // Returns the list of all customers found in the database with the total reward points they have each earned
     public String getTotalRewardsPointsEarned() {
 
-        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointRepository.findAll();
+        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointsRepository.findAll();
         HashMap<String, Integer> rewardPointsMap = new HashMap<>();
 
         for(PurchaseEntity result : results){
@@ -53,12 +56,17 @@ public class RewardPointService {
             }
         }
 
-        return rewardPointsMap.toString();
+        StringBuilder sb = new StringBuilder();
+        for(String customerId : rewardPointsMap.keySet()){
+            sb.append(String.format("Customer %s has earned a total of %d reward points.\n", customerId, rewardPointsMap.get(customerId)));
+        }
+        return sb.toString();
     }
 
+    // Returns the list of all customers found in the database with a breakdown of how many points they have earned in each month
     public String getTotalRewardsPointsEarnedByMonth() {
 
-        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointRepository.findAll();
+        List<PurchaseEntity> results = (List<PurchaseEntity>) rewardPointsRepository.findAll();
         HashMap<String, List<PurchaseEntity>> customerMap = new HashMap<>();
 
         // For each purchase record
@@ -88,13 +96,19 @@ public class RewardPointService {
             customerRewardPointsMap.put(customerId, rewardPointsByMonth);
         }
 
-        return customerRewardPointsMap.toString();
+        StringBuilder sb = new StringBuilder();
+        for(String customerId : customerRewardPointsMap.keySet()){
+            sb.append(String.format("Customer %s reward points break-down by month:\n", customerId));
+            sb.append(customerRewardPointsMap.get(customerId) + "\n\n");
+        }
+
+        return sb.toString();
     }
 
-
+    // Given a customerId, returns the total number of reward points that customer has earned
     public String getTotalRewardsPointsEarnedByCustomer(String customerId) {
         int totalRewardPointsEarned = 0;
-        List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
+        List<PurchaseEntity> results =  rewardPointsRepository.findByCustomerId(customerId);
 
         for(PurchaseEntity result : results){
             totalRewardPointsEarned += result.getRewardPointsEarned();
@@ -103,13 +117,15 @@ public class RewardPointService {
         return String.format("Customer %s has earned a total of %d reward points!", customerId, totalRewardPointsEarned);
     }
 
+    // Given a customerId, returns the number of reward points earned by a specific customer separated by month
     public String getRewardsPointsEarnedByCustomerByMonth(String customerId) {
-        List<PurchaseEntity> results =  rewardPointRepository.findByCustomerId(customerId);
+        List<PurchaseEntity> results =  rewardPointsRepository.findByCustomerId(customerId);
         HashMap<String, Integer> rewardPointsMap = getRewardPointsEarnedByMonth(results);
 
         return rewardPointsMap.toString();
     }
 
+    // Given a list of purchaseEntities, returns the number of reward points earned separated by month
     public HashMap<String, Integer> getRewardPointsEarnedByMonth(List<PurchaseEntity> purchaseEntities){
 
         HashMap<String, Integer> rewardPointsMap = new HashMap<>();
@@ -117,8 +133,6 @@ public class RewardPointService {
         for(PurchaseEntity purchaseEntity : purchaseEntities){
             int monthIndex = purchaseEntity.getDate().indexOf("-");
             int yearIndex = purchaseEntity.getDate().lastIndexOf("-");
-
-
             String monthAndYear = purchaseEntity.getDate().substring(0, monthIndex) + purchaseEntity.getDate().substring(yearIndex);
 
             if(rewardPointsMap.containsKey(monthAndYear)){
