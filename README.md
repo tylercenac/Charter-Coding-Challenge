@@ -14,3 +14,6 @@ Instructions:
             b. Total reward points earned by each customerId in the database
             c. Reward points earned by a specific customerId separated by month
             d. Reward points earned by each customerId in the database separated by month
+
+
+See the "Screenshots" directory for examples of data and requests.
