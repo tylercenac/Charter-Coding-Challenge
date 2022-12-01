@@ -1,8 +1,6 @@
 package org.example.data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -10,6 +8,7 @@ import java.util.UUID;
 public class PurchaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String purchaseId;
     private String customerId;
     private String date;
@@ -21,7 +20,6 @@ public class PurchaseEntity {
 
     public PurchaseEntity(String customerId, String date, int rewardPointsEarned){
         this();
-        this.setPurchaseId(String.valueOf(UUID.randomUUID()));
         this.setCustomerId(customerId);
         this.setDate(date);
         this.setRewardPointsEarned(rewardPointsEarned);

@@ -10,7 +10,13 @@ services:
     depends_on:
       - rewardpoints-db
     stdin_open: true
-
+    environment:
+      SPRING_APPLICATION_JSON: '{
+          "spring.datasource.url": "jdbc:mysql://rewardpoints-db:3306/rewards",
+          "spring.datasource.username": "user",
+          "spring.datasource.password": "password",
+          "spring.jpa.hibernate.ddl-auto": "update" 
+        }'
 
   rewardpoints-db:
     image: mysql:latest
